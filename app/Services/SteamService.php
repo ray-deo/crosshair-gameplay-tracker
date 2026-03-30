@@ -142,7 +142,19 @@ class SteamService
                 'l' => 'en',
             ]);
 
+            if ($response->failed()) {
+                return null;
+            }
+
             $data = $response->json();
+
+            if (!is_array($data)) {
+                return null;
+            }
+
+            if (!isset($data[$appId]) || !is_array($data[$appId])) {
+                return null;
+            }
 
             if (!($data[$appId]['success'] ?? false)) {
                 return null;
@@ -150,9 +162,13 @@ class SteamService
 
             $details = $data[$appId]['data'] ?? [];
 
+            if (!is_array($details)) {
+                return null;
+            }
+
             $genres = array_map(function ($genre) {
                 return ['name' => $genre['description'] ?? 'Unknown'];
-            }, $details['genres'] ?? []);
+            }, is_array($details['genres'] ?? null) ? $details['genres'] : []);
 
             $platforms = [];
             $platformData = $details['platforms'] ?? [];

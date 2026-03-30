@@ -15,22 +15,32 @@ class GameController extends Controller
         $game = Game::findOrFail($id);
 
         $data = null;
-        if (!empty($game->rawg_id) && strpos((string) $game->rawg_id, 'steam_') !== 0) {
-            $data = app(\App\Services\RawgService::class)
-                ->getGameDetails($game->rawg_id);
-        }
-
-        if (!$data) {
-            $steamAppId = $game->steam_appid;
-
-            if (!$steamAppId && !empty($game->rawg_id) && strpos((string) $game->rawg_id, 'steam_') === 0) {
-                $steamAppId = (int) str_replace('steam_', '', (string) $game->rawg_id);
+        try {
+            if (!empty($game->rawg_id) && strpos((string) $game->rawg_id, 'steam_') !== 0) {
+                $data = app(\App\Services\RawgService::class)
+                    ->getGameDetails($game->rawg_id);
             }
 
-            if ($steamAppId) {
-                $data = app(\App\Services\SteamService::class)
-                    ->getGameDetailsForShow($steamAppId);
+            if (!$data) {
+                $steamAppId = $game->steam_appid;
+
+                if (!$steamAppId && !empty($game->rawg_id) && strpos((string) $game->rawg_id, 'steam_') === 0) {
+                    $steamAppId = (int) str_replace('steam_', '', (string) $game->rawg_id);
+                }
+
+                if ($steamAppId) {
+                    $data = app(\App\Services\SteamService::class)
+                        ->getGameDetailsForShow($steamAppId);
+                }
             }
+        } catch (\Throwable $e) {
+            \Log::error('Game detail metadata fetch failed: ' . $e->getMessage(), [
+                'game_id' => $game->id,
+                'rawg_id' => $game->rawg_id,
+                'steam_appid' => $game->steam_appid,
+            ]);
+
+            $data = null;
         }
 
         $notes = Note::where('game_id', $id)
