@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Screenshot extends Model
 {
-    protected $fillable = ['user_id', 'game_id', 'image_path'];
+    protected $fillable = ['user_id', 'game_id', 'image_path', 'path'];
 
     public function game()
     {

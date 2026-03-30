@@ -10,12 +10,17 @@
     <h1 class="search-title">Search Games</h1>
 
     <form method="GET" action="/search" class="search-form">
-        <input 
-            type="text" 
-            name="q" 
-            placeholder="Search for games..." 
-            class="search-input"
-        >
+        <div class="search-shell">
+            <span class="search-icon" aria-hidden="true">[+]</span>
+            <input 
+                type="text" 
+                name="q" 
+                placeholder="Search for games..." 
+                class="search-input"
+                autocomplete="off"
+            >
+            <button type="submit" class="search-btn">Scan</button>
+        </div>
     </form>
 
 </div>
@@ -26,12 +31,17 @@
 <div class="results-container">
 
     <form method="GET" action="/search" class="search-form-top">
-        <input 
-            type="text" 
-            name="q" 
-            value="{{ request('q') }}" 
-            class="search-input-small"
-        >
+        <div class="search-shell small">
+            <span class="search-icon" aria-hidden="true">[+]</span>
+            <input 
+                type="text" 
+                name="q" 
+                value="{{ request('q') }}" 
+                class="search-input-small"
+                autocomplete="off"
+            >
+            <button type="submit" class="search-btn">Search</button>
+        </div>
     </form>
 
     <div class="grid">
@@ -82,23 +92,68 @@
 .search-title {
     color: #00ff9c;
     margin-bottom: 30px;
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 14px #00ff9c55;
+}
+
+.search-shell {
+    width: min(720px, 92vw);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #00ff9f;
+    background: linear-gradient(120deg, #001f16, #000);
+    border-radius: 999px;
+    padding: 8px 10px 8px 14px;
+    box-shadow: 0 0 18px #00ff9c22;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.search-shell:focus-within {
+    box-shadow: 0 0 22px #00ff9c4d;
+    transform: translateY(-1px);
+}
+
+.search-icon {
+    color: #00ff9c;
+    opacity: 0.85;
+    letter-spacing: 0.1em;
+    font-size: 13px;
 }
 
 /* BIG INPUT */
-.search-input {
-    width: 600px;
-    padding: 16px 20px;
-    font-size: 18px;
-
-    border: 2px solid #00ff9f;
-    background: black;
+.search-input,
+.search-input-small {
+    width: 100%;
+    padding: 10px 4px;
+    font-size: 17px;
+    border: none;
+    background: transparent;
     color: #00ff9c;
-    border-radius: 30px;
     outline: none;
 }
 
-.search-input:focus {
-    box-shadow: 0 0 10px #00ff9f;
+.search-input::placeholder {
+    color: #00ff9c88;
+}
+
+.search-btn {
+    border: 1px solid #00ff9f;
+    border-radius: 999px;
+    background: #002417;
+    color: #00ff9c;
+    padding: 9px 16px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.search-btn:hover {
+    background: #00ff9c;
+    color: #00150d;
 }
 
 /* TOP SEARCH (SMALL) */
@@ -106,12 +161,14 @@
     margin-bottom: 30px;
 }
 
-.search-input-small {
-    width: 400px;
-    padding: 10px;
-    border: 2px solid #00ff9f;
-    background: black;
-    color: #00ff9c;
+.search-shell.small {
+    width: min(560px, 92vw);
+    border-radius: 16px;
+}
+
+.search-shell.small .search-input-small {
+    font-size: 15px;
+    padding: 8px 2px;
 }
 
 /* GRID */
@@ -146,6 +203,29 @@
 .add-btn:hover {
     background: #00ff9f;
     color: black;
+}
+
+@media (max-width: 780px) {
+    .search-title {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .search-shell,
+    .search-shell.small {
+        grid-template-columns: 1fr;
+        border-radius: 16px;
+        padding: 12px;
+        gap: 8px;
+    }
+
+    .search-icon {
+        display: none;
+    }
+
+    .search-btn {
+        width: 100%;
+    }
 }
 
 </style>

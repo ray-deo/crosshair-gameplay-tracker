@@ -79,22 +79,17 @@ Route::middleware('auth')->group(function () {
     ->name('game.show')
     ->middleware('auth');
 
-    Route::post('/game/{id}/notes', [NoteController::class, 'store'])->middleware('auth');
-    Route::put('/notes/{id}', [NoteController::class, 'update'])->middleware('auth');
-    Route::delete('/notes/{id}', [NoteController::class, 'destroy'])->middleware('auth');
-    
-    Route::post('/screenshots/{id}', [ScreenshotController::class, 'upload'])
-    ->name('screenshots.upload');
-    Route::post('/game/{id}/screenshots', [ScreenshotController::class, 'store'])->middleware('auth');
-Route::delete('/screenshots/{id}', [ScreenshotController::class, 'destroy'])->middleware('auth');
-Route::post('/game/{id}/screenshots', [GameController::class, 'uploadScreenshots'])
-    ->name('screenshots.upload');
+    Route::post('/game/{id}/notes', [NoteController::class, 'store'])
+        ->name('notes.store');
+    Route::put('/notes/{id}', [NoteController::class, 'update'])
+        ->name('notes.update');
+    Route::delete('/notes/{id}', [NoteController::class, 'destroy'])
+        ->name('notes.destroy');
 
-Route::post('/game/{id}/notes', [NoteController::class, 'store'])->name('notes.store');
-Route::post('/game/{game}/notes', [NoteController::class, 'store'])->name('notes.store');
-Route::delete('/notes/{id}', [NoteController::class, 'destroy'])->name('notes.destroy');
-Route::post('/game/{id}/screenshots', [GameController::class, 'uploadScreenshots'])
-    ->name('screenshots.upload');
+    Route::post('/game/{id}/screenshots', [ScreenshotController::class, 'upload'])
+        ->name('screenshots.upload');
+    Route::delete('/screenshots/{id}', [ScreenshotController::class, 'destroy'])
+        ->name('screenshots.destroy');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
@@ -108,9 +103,4 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 Route::get('/library', [LibraryController::class, 'index']);
-Route::post('/game/{id}/screenshots', [GameController::class, 'uploadScreenshots'])
-    ->name('screenshots.upload');
-
-Route::delete('/screenshots/{id}', [ScreenshotController::class, 'destroy'])
-    ->name('screenshots.destroy');
 });
