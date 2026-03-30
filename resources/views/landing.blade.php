@@ -131,6 +131,8 @@ body {
     border: 1px solid #00ff9c;
     padding: 60px;
     text-align: center;
+    box-shadow: 0 0 0 rgba(0, 255, 156, 0);
+    animation: heroPulse 3.8s ease-in-out infinite;
 }
 
 .hero-box h1 {
@@ -138,6 +140,8 @@ body {
     color: #00ff9c;
     font-family: monospace;
     min-height: 48px;
+    text-shadow: 0 0 0 rgba(0, 255, 156, 0);
+    animation: titlePulse 3s ease-in-out infinite;
 }
 
 .boot-sequence {
@@ -248,6 +252,7 @@ body {
     background: #000;
     box-shadow: 0 0 20px #00ff9c22;
     transition: box-shadow 0.25s ease, transform 0.25s ease;
+    animation: panelPulse 4.2s ease-in-out infinite;
 }
 
 .split.is-visible .image-box:hover {
@@ -280,11 +285,53 @@ body {
     display: inline-block;
     margin-top: 20px;
     transition: 0.2s;
+    animation: ctaPulse 2.4s ease-in-out infinite;
 }
 
 .retro-btn:hover {
     background: #00ff9c;
     color: #000;
+    animation: none;
+}
+
+@keyframes heroPulse {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(0, 255, 156, 0.1);
+        border-color: rgba(0, 255, 156, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 36px rgba(0, 255, 156, 0.22);
+        border-color: rgba(0, 255, 156, 1);
+    }
+}
+
+@keyframes titlePulse {
+    0%, 100% {
+        text-shadow: 0 0 8px rgba(0, 255, 156, 0.2);
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(0, 255, 156, 0.55);
+    }
+}
+
+@keyframes panelPulse {
+    0%, 100% {
+        box-shadow: 0 0 18px rgba(0, 255, 156, 0.12);
+    }
+    50% {
+        box-shadow: 0 0 26px rgba(0, 255, 156, 0.28);
+    }
+}
+
+@keyframes ctaPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(0, 255, 156, 0);
+        transform: translateY(0);
+    }
+    50% {
+        box-shadow: 0 0 18px rgba(0, 255, 156, 0.35);
+        transform: translateY(-1px);
+    }
 }
 
 @media (max-width: 960px) {
