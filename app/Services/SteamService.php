@@ -121,6 +121,7 @@ class SteamService
                 return [
                     'name' => $details['name'] ?? null,
                     'header_image' => $details['header_image'] ?? null,
+                    'cover_image' => "https://cdn.cloudflare.steamstatic.com/steam/apps/{$appId}/library_600x900_2x.jpg",
                     'steam_appid' => $appId,
                 ];
             }

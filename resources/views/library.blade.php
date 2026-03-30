@@ -64,7 +64,8 @@
         <a href="{{ route('game.show', $game->id) }}" class="game-link">
 
             <img 
-                src="{{ $game->cover_url ?? 'https://placehold.co/300x400?text=No+Image' }}" 
+                src="{{ $game->steam_appid ? 'https://cdn.cloudflare.steamstatic.com/steam/apps/' . $game->steam_appid . '/library_600x900_2x.jpg' : ($game->cover_url ?? 'https://placehold.co/300x400?text=No+Image') }}"
+                onerror="this.onerror=null; this.src='{{ $game->cover_url ?? 'https://placehold.co/300x400?text=No+Image' }}';"
                 class="game-cover"
             >
 
@@ -172,6 +173,8 @@
     padding:12px;
     background:#050505;
     transition:0.2s;
+    display:flex;
+    flex-direction:column;
 }
 
 .game-card:hover{
@@ -182,8 +185,11 @@
 /* IMAGE */
 .game-cover{
     width:100%;
-    height:300px;
-    object-fit:cover;
+    aspect-ratio:3/4;
+    height:auto;
+    object-fit:contain;
+    object-position:center;
+    background:#030303;
     border:1px solid #00ff9c55;
 }
 
@@ -191,6 +197,8 @@
 .game-title{
     font-size:14px;
     margin-top:8px;
+    min-height:38px;
+    line-height:1.35;
 }
 
 /* LINK FIX */

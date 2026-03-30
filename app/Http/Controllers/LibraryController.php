@@ -147,7 +147,7 @@ class LibraryController extends Controller
 
                 $defaults = [
                     'title' => $details['name'],
-                    'cover_url' => $details['header_image'] ?? null,
+                    'cover_url' => $details['cover_image'] ?? $details['header_image'] ?? null,
                 ];
 
                 if (!$hasSteamAppIdColumn) {
