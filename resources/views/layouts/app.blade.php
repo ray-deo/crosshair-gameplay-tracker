@@ -159,6 +159,16 @@ header {
         var(--header-top),
         rgba(0,0,0,0)
     );
+
+    transition: background 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+    border-bottom: 1px solid transparent;
+}
+
+header.scrolled {
+    background: color-mix(in srgb, var(--bg) 88%, black 12%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    border-bottom-color: color-mix(in srgb, var(--accent) 28%, transparent);
+    backdrop-filter: blur(6px);
 }
 
 /* LOGO */
@@ -261,6 +271,7 @@ header {
 
     const btn = document.getElementById('theme-toggle');
     const root = document.documentElement;
+    const header = document.querySelector('header');
     const saved = localStorage.getItem('crosshair-theme') || 'neon';
     const normalizedSaved = legacyMap[saved] || saved;
 
@@ -286,6 +297,17 @@ header {
         const next = themes[(index + 1) % themes.length].key;
         applyTheme(next);
     });
+
+    const updateHeaderOnScroll = () => {
+        if (!header) {
+            return;
+        }
+
+        header.classList.toggle('scrolled', window.scrollY > 24);
+    };
+
+    window.addEventListener('scroll', updateHeaderOnScroll, { passive: true });
+    updateHeaderOnScroll();
 })();
 </script>
 
