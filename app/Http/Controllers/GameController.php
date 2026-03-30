@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Note;
 use App\Models\Screenshot;
+use App\Models\Video;
 
 
 class GameController extends Controller
@@ -14,9 +15,22 @@ class GameController extends Controller
         $game = Game::findOrFail($id);
 
         $data = null;
-        if (!empty($game->rawg_id)) {
+        if (!empty($game->rawg_id) && strpos((string) $game->rawg_id, 'steam_') !== 0) {
             $data = app(\App\Services\RawgService::class)
                 ->getGameDetails($game->rawg_id);
+        }
+
+        if (!$data) {
+            $steamAppId = $game->steam_appid;
+
+            if (!$steamAppId && !empty($game->rawg_id) && strpos((string) $game->rawg_id, 'steam_') === 0) {
+                $steamAppId = (int) str_replace('steam_', '', (string) $game->rawg_id);
+            }
+
+            if ($steamAppId) {
+                $data = app(\App\Services\SteamService::class)
+                    ->getGameDetailsForShow($steamAppId);
+            }
         }
 
         $notes = Note::where('game_id', $id)
@@ -27,11 +41,16 @@ class GameController extends Controller
             ->where('user_id', auth()->id())
             ->get();
 
+        $videos = Video::where('game_id', $id)
+            ->where('user_id', auth()->id())
+            ->get();
+
         return view('game.show', [
             'game' => $game,
             'data' => $data,
             'notes' => $notes,
             'screenshots' => $screenshots,
+            'videos' => $videos,
         ]);
     }
 }

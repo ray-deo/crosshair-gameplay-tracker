@@ -132,6 +132,55 @@ class SteamService
     }
 
     /**
+     * Get normalized details for game show page.
+     */
+    public function getGameDetailsForShow($appId): ?array
+    {
+        try {
+            $response = Http::timeout(10)->get('https://store.steampowered.com/api/appdetails', [
+                'appids' => $appId,
+                'l' => 'en',
+            ]);
+
+            $data = $response->json();
+
+            if (!($data[$appId]['success'] ?? false)) {
+                return null;
+            }
+
+            $details = $data[$appId]['data'] ?? [];
+
+            $genres = array_map(function ($genre) {
+                return ['name' => $genre['description'] ?? 'Unknown'];
+            }, $details['genres'] ?? []);
+
+            $platforms = [];
+            $platformData = $details['platforms'] ?? [];
+            foreach (['windows', 'mac', 'linux'] as $platformKey) {
+                if (!empty($platformData[$platformKey])) {
+                    $platforms[] = ['platform' => ['name' => ucfirst($platformKey)]];
+                }
+            }
+
+            $descriptionRaw = $details['detailed_description']
+                ?? $details['short_description']
+                ?? null;
+
+            return [
+                'description' => $details['short_description'] ?? null,
+                'description_raw' => $descriptionRaw ? trim(strip_tags($descriptionRaw)) : null,
+                'genres' => $genres,
+                'platforms' => $platforms,
+                'background_image' => $details['header_image'] ?? null,
+                'released' => $details['release_date']['date'] ?? null,
+            ];
+        } catch (\Throwable $e) {
+            \Log::error("Steam game details fetch failed for show app {$appId}: " . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Batch fetch multiple game details (with caching to respect rate limits)
      */
     public function getGameDetailsBatch(array $appIds): array
