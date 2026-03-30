@@ -43,6 +43,7 @@
                 linear-gradient(90deg, rgba(255, 0, 76, 0.07), transparent 40%, rgba(0, 255, 178, 0.07)),
                 radial-gradient(circle at 15% 15%, rgba(0, 255, 156, 0.2), transparent 40%);
             transform: translateX(0);
+            transition: opacity 0.35s ease;
         }
 
         /* ===== HEADER ===== */
@@ -80,6 +81,7 @@
             box-shadow: 0 0 20px #00ff9c22;
             position: relative;
             animation: bootIn 0.55s steps(8) 1;
+            transition: transform 0.6s ease, box-shadow 0.6s ease, border-color 0.6s ease;
         }
 
         .auth-box::before,
@@ -155,7 +157,35 @@
         button.loading {
             cursor: wait;
             pointer-events: none;
-            animation: btnGlitch 0.35s steps(2) infinite;
+            animation: btnGlitch 0.85s ease-in-out infinite;
+        }
+
+        .flow-status {
+            min-height: 18px;
+            margin-top: 8px;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+
+        .flow-meter {
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 255, 156, 0.16);
+            margin-top: 6px;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .flow-meter span {
+            display: block;
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(0,255,156,0.3), rgba(0,255,156,1));
+            transition: width 1.35s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
         /* ===== LINK ===== */
@@ -178,13 +208,32 @@
 
         body.loading .glitch-overlay {
             opacity: 1;
-            animation: overlayPulse 0.25s steps(2) infinite;
+            animation: overlayPulse 1.2s ease-in-out infinite alternate;
         }
 
         body.loading .auth-box::before,
         body.loading .auth-box::after {
             opacity: 1;
-            animation: ghostShift 0.16s steps(2) infinite;
+            animation: ghostShift 0.55s ease-in-out infinite alternate;
+        }
+
+        body.loading .auth-box {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 0 28px rgba(0, 255, 156, 0.22);
+            border-color: rgba(0, 255, 156, 0.85);
+        }
+
+        body.loading .flow-status {
+            opacity: 0.95;
+            transform: translateY(0);
+        }
+
+        body.loading .flow-meter {
+            opacity: 1;
+        }
+
+        body.loading .flow-meter span {
+            width: 100%;
         }
 
         @keyframes bootIn {
@@ -206,13 +255,13 @@
         }
 
         @keyframes overlayPulse {
-            0% { transform: translateX(-1px); filter: hue-rotate(0deg); }
-            100% { transform: translateX(1px); filter: hue-rotate(20deg); }
+            0% { transform: translateX(-1px); filter: hue-rotate(0deg) saturate(1); }
+            100% { transform: translateX(1px); filter: hue-rotate(16deg) saturate(1.2); }
         }
 
         @keyframes ghostShift {
-            0% { transform: translate(-2px, 0); }
-            100% { transform: translate(2px, 0); }
+            0% { transform: translate(-1px, 0); }
+            100% { transform: translate(1px, 0); }
         }
 
         @keyframes btnGlitch {
@@ -263,6 +312,8 @@
             <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
 
             <button type="submit" id="registerSubmit">CREATE</button>
+            <div class="flow-status" id="registerFlowStatus" aria-live="polite"></div>
+            <div class="flow-meter" aria-hidden="true"><span></span></div>
         </form>
 
         <a href="/login">Back to Login</a>
@@ -273,6 +324,7 @@
 <script>
 const registerForm = document.getElementById('registerForm');
 const registerSubmit = document.getElementById('registerSubmit');
+const registerFlowStatus = document.getElementById('registerFlowStatus');
 
 if (registerForm && registerSubmit) {
     registerForm.addEventListener('submit', function (event) {
@@ -286,9 +338,23 @@ if (registerForm && registerSubmit) {
         registerSubmit.classList.add('loading');
         registerSubmit.textContent = 'PROVISIONING...';
 
+        const phases = ['ALLOCATING PROFILE...', 'ENCRYPTING CREDENTIALS...', 'BOOTING ACCOUNT...'];
+        let phaseIndex = 0;
+        if (registerFlowStatus) {
+            registerFlowStatus.textContent = phases[0];
+        }
+
+        const phaseTimer = setInterval(function () {
+            phaseIndex = Math.min(phaseIndex + 1, phases.length - 1);
+            if (registerFlowStatus) {
+                registerFlowStatus.textContent = phases[phaseIndex];
+            }
+        }, 420);
+
         setTimeout(function () {
+            clearInterval(phaseTimer);
             registerForm.submit();
-        }, 450);
+        }, 1400);
     });
 }
 </script>
