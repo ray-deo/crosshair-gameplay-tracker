@@ -11,9 +11,19 @@
 </div>
 
 <div class="container">
+    @php
+        $steamCover = $game->steam_appid
+            ? 'https://cdn.cloudflare.steamstatic.com/steam/apps/' . $game->steam_appid . '/library_600x900_2x.jpg'
+            : null;
+
+        $mainCover = $steamCover ?? ($game->cover_url ?? ($data['background_image'] ?? 'https://placehold.co/600x800?text=No+Image'));
+        $fallbackCover = $game->cover_url ?? ($data['background_image'] ?? 'https://placehold.co/600x800?text=No+Image');
+    @endphp
+
     <div class="hero-content">
         <img
-            src="{{ $data['background_image'] ?? $game->cover_url ?? 'https://placehold.co/600x800?text=No+Image' }}"
+            src="{{ $mainCover }}"
+            onerror="this.onerror=null; this.src='{{ $fallbackCover }}';"
             class="cover"
             alt="{{ $game->title }}"
         >
@@ -263,8 +273,11 @@
 .cover {
     width: 100%;
     max-width: 280px;
-    height: 380px;
-    object-fit: cover;
+    aspect-ratio: 3 / 4;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    background: #030303;
     display: block;
     border: 1px solid color-mix(in srgb, var(--game-accent) 75%, transparent);
     box-shadow:
@@ -535,8 +548,11 @@
 .shot-img {
     display: block;
     width: 100%;
-    height: 120px;
-    object-fit: cover;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    object-fit: contain;
+    object-position: center;
+    background: #030303;
     border: 1px solid color-mix(in srgb, var(--game-accent) 40%, transparent);
 }
 
@@ -576,7 +592,6 @@
 
     .cover {
         max-width: 220px;
-        height: 300px;
         margin: 0 auto;
     }
 
