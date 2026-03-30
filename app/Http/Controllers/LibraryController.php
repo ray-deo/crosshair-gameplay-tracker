@@ -13,10 +13,11 @@ class LibraryController extends Controller
     public function index(Request $request)
     {
         $sort = $request->get('sort', 'favorites');
+        $hasFavoritesColumn = Schema::hasColumn('user_games', 'is_favorite');
 
         $gamesQuery = Auth::user()
             ->games()
-            ->withPivot('status', 'progress', 'is_favorite');
+            ->withPivot(...($hasFavoritesColumn ? ['status', 'progress', 'is_favorite'] : ['status', 'progress']));
 
         switch ($sort) {
             case 'title_asc':
@@ -24,10 +25,6 @@ class LibraryController extends Controller
                 break;
             case 'title_desc':
                 $gamesQuery->orderBy('games.title', 'desc');
-                break;
-            case 'progress_desc':
-                $gamesQuery->orderByPivot('progress', 'desc')
-                    ->orderByPivot('updated_at', 'desc');
                 break;
             case 'recent':
                 $gamesQuery->orderByPivot('updated_at', 'desc');
@@ -39,14 +36,18 @@ class LibraryController extends Controller
             case 'favorites':
             default:
                 $sort = 'favorites';
-                $gamesQuery->orderByPivot('is_favorite', 'desc')
-                    ->orderByPivot('updated_at', 'desc');
+                if ($hasFavoritesColumn) {
+                    $gamesQuery->orderByPivot('is_favorite', 'desc')
+                        ->orderByPivot('updated_at', 'desc');
+                } else {
+                    $gamesQuery->orderByPivot('updated_at', 'desc');
+                }
                 break;
         }
 
         $games = $gamesQuery->get();
 
-        return view('library', compact('games', 'sort'));
+        return view('library', compact('games', 'sort', 'hasFavoritesColumn'));
     }
 
     public function add(Request $request)
@@ -86,6 +87,10 @@ class LibraryController extends Controller
 
     public function toggleFavorite($id)
     {
+        if (!Schema::hasColumn('user_games', 'is_favorite')) {
+            return back()->with('error', 'Favorites are not available yet. Run migrations in production.');
+        }
+
         $user = auth()->user();
 
         $existing = $user->games()->where('game_id', $id)->first();

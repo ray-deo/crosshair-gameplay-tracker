@@ -13,11 +13,12 @@
         <form method="GET" action="{{ route('library') }}" class="sort-form">
             <label for="sort">Sort by</label>
             <select id="sort" name="sort" onchange="this.form.submit()">
-                <option value="favorites" {{ ($sort ?? 'favorites') === 'favorites' ? 'selected' : '' }}>Favorites First</option>
+                @if(($hasFavoritesColumn ?? true))
+                    <option value="favorites" {{ ($sort ?? 'favorites') === 'favorites' ? 'selected' : '' }}>Favorites First</option>
+                @endif
                 <option value="recent" {{ ($sort ?? 'favorites') === 'recent' ? 'selected' : '' }}>Recently Updated</option>
                 <option value="title_asc" {{ ($sort ?? 'favorites') === 'title_asc' ? 'selected' : '' }}>Title A-Z</option>
                 <option value="title_desc" {{ ($sort ?? 'favorites') === 'title_desc' ? 'selected' : '' }}>Title Z-A</option>
-                <option value="progress_desc" {{ ($sort ?? 'favorites') === 'progress_desc' ? 'selected' : '' }}>Highest Progress</option>
                 <option value="status" {{ ($sort ?? 'favorites') === 'status' ? 'selected' : '' }}>Status</option>
             </select>
         </form>
@@ -71,15 +72,17 @@
 
         </a>
 
-        <form method="POST" action="{{ route('library.favorite', $game->id) }}" class="favorite-form">
-            @csrf
-            <button
-                type="submit"
-                class="favorite-btn {{ $game->pivot->is_favorite ? 'is-favorite' : '' }}"
-            >
-                {{ $game->pivot->is_favorite ? 'FAVORITED' : 'FAVORITE' }}
-            </button>
-        </form>
+        @if(($hasFavoritesColumn ?? true))
+            <form method="POST" action="{{ route('library.favorite', $game->id) }}" class="favorite-form">
+                @csrf
+                <button
+                    type="submit"
+                    class="favorite-btn {{ $game->pivot->is_favorite ? 'is-favorite' : '' }}"
+                >
+                    {{ $game->pivot->is_favorite ? 'FAVORITED' : 'FAVORITE' }}
+                </button>
+            </form>
+        @endif
 
         <!-- REMOVE BUTTON -->
         <form method="POST" action="{{ route('library.remove', $game->id) }}" class="remove-form">
