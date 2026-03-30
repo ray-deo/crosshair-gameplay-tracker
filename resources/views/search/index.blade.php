@@ -79,6 +79,13 @@
 
 <style>
 
+:root {
+    --search-panel: color-mix(in srgb, var(--bg) 82%, black 18%);
+    --search-border: color-mix(in srgb, var(--accent) 65%, transparent);
+    --search-border-soft: color-mix(in srgb, var(--accent) 35%, transparent);
+    --search-soft: color-mix(in srgb, var(--text) 62%, transparent);
+}
+
 /* CENTER SEARCH */
 .search-wrapper {
     height: 70vh;
@@ -90,10 +97,10 @@
 
 /* TITLE */
 .search-title {
-    color: #00ff9c;
+    color: var(--text);
     margin-bottom: 30px;
     letter-spacing: 0.08em;
-    text-shadow: 0 0 14px #00ff9c55;
+    text-shadow: 0 0 14px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .search-shell {
@@ -102,21 +109,21 @@
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 10px;
-    border: 1px solid #00ff9f;
-    background: linear-gradient(120deg, #001f16, #000);
+    border: 1px solid var(--search-border);
+    background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 10%, var(--bg)), var(--search-panel));
     border-radius: 999px;
     padding: 8px 10px 8px 14px;
-    box-shadow: 0 0 18px #00ff9c22;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 20%, transparent);
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .search-shell:focus-within {
-    box-shadow: 0 0 22px #00ff9c4d;
+    box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 38%, transparent);
     transform: translateY(-1px);
 }
 
 .search-icon {
-    color: #00ff9c;
+    color: var(--text);
     opacity: 0.85;
     letter-spacing: 0.1em;
     font-size: 13px;
@@ -130,19 +137,19 @@
     font-size: 17px;
     border: none;
     background: transparent;
-    color: #00ff9c;
+    color: var(--text);
     outline: none;
 }
 
 .search-input::placeholder {
-    color: #00ff9c88;
+    color: var(--search-soft);
 }
 
 .search-btn {
-    border: 1px solid #00ff9f;
+    border: 1px solid var(--search-border);
     border-radius: 999px;
-    background: #002417;
-    color: #00ff9c;
+    background: color-mix(in srgb, var(--accent) 12%, var(--bg));
+    color: var(--text);
     padding: 9px 16px;
     font-size: 12px;
     letter-spacing: 0.08em;
@@ -152,7 +159,7 @@
 }
 
 .search-btn:hover {
-    background: #00ff9c;
+    background: var(--accent);
     color: #00150d;
 }
 
@@ -180,8 +187,9 @@
 
 /* CARD */
 .card {
-    border: 1px solid #00ff9f;
+    border: 1px solid var(--search-border);
     padding: 10px;
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
 }
 
 .card-img {
@@ -194,14 +202,14 @@
 .add-btn {
     margin-top: 10px;
     padding: 8px;
-    border: 1px solid #00ff9f;
-    background: black;
-    color: #00ff9c;
+    border: 1px solid var(--search-border);
+    background: var(--search-panel);
+    color: var(--text);
     cursor: pointer;
 }
 
 .add-btn:hover {
-    background: #00ff9f;
+    background: var(--accent);
     color: black;
 }
 

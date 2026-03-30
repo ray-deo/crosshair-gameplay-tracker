@@ -115,6 +115,14 @@
 
 <style>
 
+:root {
+    --page-bg-soft: color-mix(in srgb, var(--bg) 82%, black 18%);
+    --page-panel: color-mix(in srgb, var(--accent) 5%, transparent);
+    --page-border: color-mix(in srgb, var(--accent) 58%, transparent);
+    --page-border-soft: color-mix(in srgb, var(--accent) 32%, transparent);
+    --page-text-soft: color-mix(in srgb, var(--text) 62%, transparent);
+}
+
 /* PAGE FIX */
 .library-page{
     margin-top:100px;
@@ -136,15 +144,15 @@
     display:flex;
     align-items:center;
     gap:10px;
-    color:#00ff9c;
+    color:var(--text);
     font-family:monospace;
     font-size:13px;
 }
 
 .sort-form select{
-    background:#050505;
-    border:1px solid #00ff9c;
-    color:#00ff9c;
+    background:var(--page-bg-soft);
+    border:1px solid var(--page-border);
+    color:var(--text);
     padding:7px 10px;
     font-family:monospace;
     font-size:13px;
@@ -152,11 +160,11 @@
 
 .sort-form select:focus{
     outline:none;
-    box-shadow:0 0 8px #00ff9c55;
+    box-shadow:0 0 8px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 .subtext{
-    color:#00ff9c88;
+    color:var(--page-text-soft);
     font-size:14px;
 }
 
@@ -169,9 +177,9 @@
 
 /* CARD */
 .game-card{
-    border:1px solid #00ff9c;
+    border:1px solid var(--page-border);
     padding:12px;
-    background:#050505;
+    background:var(--page-bg-soft);
     transition:0.2s;
     display:flex;
     flex-direction:column;
@@ -179,7 +187,7 @@
 
 .game-card:hover{
     transform:scale(1.03);
-    box-shadow:0 0 20px #00ff9c55;
+    box-shadow:0 0 20px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 /* IMAGE */
@@ -190,7 +198,7 @@
     object-fit:contain;
     object-position:center;
     background:#030303;
-    border:1px solid #00ff9c55;
+    border:1px solid var(--page-border-soft);
 }
 
 /* TITLE */
@@ -220,8 +228,8 @@
 .favorite-btn{
     width:100%;
     background:none;
-    border:1px solid #ffd166;
-    color:#ffd166;
+    border:1px solid color-mix(in srgb, var(--accent) 72%, white 18%);
+    color:color-mix(in srgb, var(--accent) 72%, white 18%);
     padding:6px;
     cursor:pointer;
     font-family:monospace;
@@ -229,21 +237,21 @@
 }
 
 .favorite-btn:hover{
-    background:#ffd166;
+    background:color-mix(in srgb, var(--accent) 72%, white 18%);
     color:#000;
 }
 
 .favorite-btn.is-favorite{
-    background:#ffd166;
+    background:color-mix(in srgb, var(--accent) 72%, white 18%);
     color:#000;
-    box-shadow:0 0 12px #ffd16666;
+    box-shadow:0 0 12px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .remove-btn{
     width:100%;
     background:none;
-    border:1px solid red;
-    color:red;
+    border:1px solid #ff5c74;
+    color:#ff7c90;
     padding:6px;
     cursor:pointer;
     font-family:monospace;
@@ -251,28 +259,28 @@
 }
 
 .remove-btn:hover{
-    background:red;
+    background:#ff5c74;
     color:#000;
 }
 
 /* EMPTY */
 .empty-state{
     margin-top:40px;
-    color:#00ff9c88;
+    color:var(--page-text-soft);
 }
 
 /* STEAM IMPORT SECTION */
 .steam-import-section{
     margin-bottom:40px;
     padding:20px;
-    border:1px solid #00ff9c55;
-    background:linear-gradient(135deg, #00ff9c11 0%, #0099ff11 100%);
+    border:1px solid var(--page-border-soft);
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, transparent) 0%, color-mix(in srgb, var(--text) 10%, transparent) 100%);
 }
 
 .steam-import-section h3{
     margin-bottom:15px;
     font-size:16px;
-    color:#00ff9c;
+    color:var(--text);
 }
 
 .steam-form{
@@ -289,22 +297,26 @@
 .steam-input{
     flex:1;
     padding:10px 15px;
-    background:#050505;
-    border:1px solid #00ff9c;
-    color:#fff;
+    background:var(--page-bg-soft);
+    border:1px solid var(--page-border);
+    color:var(--text);
     font-family:monospace;
     font-size:14px;
 }
 
+.steam-input::placeholder{
+    color:var(--page-text-soft);
+}
+
 .steam-input:focus{
     outline:none;
-    border-color:#0099ff;
-    box-shadow:0 0 10px #0099ff55;
+    border-color:var(--accent);
+    box-shadow:0 0 10px color-mix(in srgb, var(--accent) 40%, transparent);
 }
 
 .steam-btn{
     padding:10px 25px;
-    background:linear-gradient(135deg, #00ff9c, #0099ff);
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 84%, white 8%), color-mix(in srgb, var(--text) 70%, black 12%));
     border:none;
     color:#000;
     font-weight:bold;
@@ -315,7 +327,7 @@
 
 .steam-btn:hover{
     transform:scale(1.05);
-    box-shadow:0 0 15px #00ff9c88;
+    box-shadow:0 0 15px color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 .success-msg, .error-msg{
@@ -327,9 +339,9 @@
 }
 
 .success-msg{
-    border-color:#00ff9c;
-    color:#00ff9c;
-    background:#00ff9c11;
+    border-color:var(--accent);
+    color:var(--text);
+    background:color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 .error-msg{
