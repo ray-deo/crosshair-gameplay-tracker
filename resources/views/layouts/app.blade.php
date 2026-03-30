@@ -9,33 +9,87 @@
 <style>
 
 :root{
-    --bg:#000;
-    --text:#00ff9c;
-    --accent:#00ff9c;
-    --header-top:rgba(0,0,0,0.9);
-    --scanline:rgba(255,255,255,0.02);
+    --bg:#05070c;
+    --text:#90ffd9;
+    --accent:#00f5b4;
+    --header-top:rgba(3,7,14,0.9);
+    --scanline:rgba(173,255,230,0.03);
+    --bg-layer-1:rgba(0,245,180,0.2);
+    --bg-layer-2:rgba(22,132,255,0.16);
+    --bg-layer-3:rgba(0,0,0,0.7);
+    --nav-glow:0 0 12px rgba(0,245,180,0.45);
 }
 
+html[data-theme="synth"]{
+    --bg:#0d0714;
+    --text:#ffd8f7;
+    --accent:#ff4fd8;
+    --header-top:rgba(13,7,20,0.92);
+    --scanline:rgba(255,173,240,0.04);
+    --bg-layer-1:rgba(255,79,216,0.22);
+    --bg-layer-2:rgba(114,90,255,0.2);
+    --bg-layer-3:rgba(8,0,15,0.72);
+    --nav-glow:0 0 12px rgba(255,79,216,0.45);
+}
+
+html[data-theme="toxic"]{
+    --bg:#0b1204;
+    --text:#d8ff7d;
+    --accent:#b5ff2a;
+    --header-top:rgba(11,18,4,0.92);
+    --scanline:rgba(216,255,125,0.04);
+    --bg-layer-1:rgba(181,255,42,0.2);
+    --bg-layer-2:rgba(76,255,176,0.14);
+    --bg-layer-3:rgba(2,9,0,0.74);
+    --nav-glow:0 0 12px rgba(181,255,42,0.42);
+}
+
+html[data-theme="chrome"]{
+    --bg:#07121d;
+    --text:#c5ecff;
+    --accent:#57d3ff;
+    --header-top:rgba(7,18,29,0.92);
+    --scanline:rgba(197,236,255,0.03);
+    --bg-layer-1:rgba(87,211,255,0.22);
+    --bg-layer-2:rgba(107,142,255,0.16);
+    --bg-layer-3:rgba(1,6,14,0.72);
+    --nav-glow:0 0 12px rgba(87,211,255,0.45);
+}
+
+/* Legacy saved keys */
 html[data-theme="amber"]{
-    --bg:#140b00;
-    --text:#ffd27a;
-    --accent:#ffb347;
-    --header-top:rgba(20,11,0,0.92);
-    --scanline:rgba(255,211,122,0.04);
+    --bg:#0d0714;
+    --text:#ffd8f7;
+    --accent:#ff4fd8;
+    --header-top:rgba(13,7,20,0.92);
+    --scanline:rgba(255,173,240,0.04);
+    --bg-layer-1:rgba(255,79,216,0.22);
+    --bg-layer-2:rgba(114,90,255,0.2);
+    --bg-layer-3:rgba(8,0,15,0.72);
+    --nav-glow:0 0 12px rgba(255,79,216,0.45);
 }
 
 html[data-theme="ice"]{
-    --bg:#061018;
-    --text:#aee9ff;
-    --accent:#5bd0ff;
-    --header-top:rgba(6,16,24,0.92);
-    --scanline:rgba(174,233,255,0.03);
+    --bg:#07121d;
+    --text:#c5ecff;
+    --accent:#57d3ff;
+    --header-top:rgba(7,18,29,0.92);
+    --scanline:rgba(197,236,255,0.03);
+    --bg-layer-1:rgba(87,211,255,0.22);
+    --bg-layer-2:rgba(107,142,255,0.16);
+    --bg-layer-3:rgba(1,6,14,0.72);
+    --nav-glow:0 0 12px rgba(87,211,255,0.45);
 }
 
 /* GLOBAL */
 body{
     margin:0;
     background:var(--bg);
+    background-image:
+        radial-gradient(circle at 16% 14%, var(--bg-layer-1), transparent 35%),
+        radial-gradient(circle at 82% 8%, var(--bg-layer-2), transparent 38%),
+        linear-gradient(160deg, var(--bg-layer-3), transparent 45%);
+    background-attachment: fixed;
     color:var(--text);
     font-family:monospace;
 }
@@ -64,17 +118,18 @@ body::after{
     right:14px;
     z-index:140;
     border:1px solid var(--accent);
-    background:var(--bg);
+    background:color-mix(in srgb, var(--bg) 78%, black 22%);
     color:var(--text);
     padding:6px 10px;
     font-family:monospace;
     font-size:12px;
     letter-spacing:1px;
     cursor:pointer;
+    box-shadow: var(--nav-glow);
 }
 
 .theme-toggle:hover{
-    box-shadow:0 0 10px color-mix(in srgb, var(--accent) 65%, transparent);
+    box-shadow:0 0 18px color-mix(in srgb, var(--accent) 85%, transparent);
 }
 
 /* HEADER */
@@ -122,7 +177,7 @@ header {
 }
 
 .nav-links a:hover{
-    text-shadow:0 0 8px var(--accent);
+    text-shadow: var(--nav-glow);
 }
 
 /* LOGOUT BUTTON */
@@ -135,7 +190,7 @@ header {
 }
 
 .nav-logout:hover{
-    text-shadow:0 0 8px var(--accent);
+    text-shadow: var(--nav-glow);
 }
 
 /* CONTAINER */
@@ -185,28 +240,37 @@ header {
 <script>
 (() => {
     const themes = [
-        { key: 'neon', label: 'Neon' },
-        { key: 'amber', label: 'Amber' },
-        { key: 'ice', label: 'Ice' }
+        { key: 'neon', label: 'Nightline' },
+        { key: 'synth', label: 'Synth Riot' },
+        { key: 'toxic', label: 'Acid Grid' },
+        { key: 'chrome', label: 'Chrome Ghost' }
     ];
+
+    const legacyMap = {
+        amber: 'synth',
+        ice: 'chrome'
+    };
 
     const btn = document.getElementById('theme-toggle');
     const root = document.documentElement;
     const saved = localStorage.getItem('crosshair-theme') || 'neon';
+    const normalizedSaved = legacyMap[saved] || saved;
 
     const applyTheme = (key) => {
-        if (key === 'neon') {
+        const normalizedKey = legacyMap[key] || key;
+
+        if (normalizedKey === 'neon') {
             root.removeAttribute('data-theme');
         } else {
-            root.setAttribute('data-theme', key);
+            root.setAttribute('data-theme', normalizedKey);
         }
 
-        const found = themes.find((t) => t.key === key) || themes[0];
+        const found = themes.find((t) => t.key === normalizedKey) || themes[0];
         btn.textContent = `Theme: ${found.label}`;
-        localStorage.setItem('crosshair-theme', key);
+        localStorage.setItem('crosshair-theme', normalizedKey);
     };
 
-    applyTheme(saved);
+    applyTheme(normalizedSaved);
 
     btn.addEventListener('click', () => {
         const current = root.getAttribute('data-theme') || 'neon';
