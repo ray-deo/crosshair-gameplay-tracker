@@ -9,6 +9,36 @@
         <p class="subtext">Library Initialized</p>
     </div>
 
+    <!-- STEAM IMPORT SECTION -->
+    <div class="steam-import-section">
+        <h3>Import from Steam</h3>
+        <form method="POST" action="{{ route('library.import-steam') }}" class="steam-form">
+            @csrf
+            <div class="form-group">
+                <input 
+                    type="text" 
+                    name="steam_profile"
+                    placeholder="Enter Steam ID or Profile URL"
+                    class="steam-input"
+                    required
+                >
+                <button type="submit" class="steam-btn">Import Games</button>
+            </div>
+        </form>
+
+        @if ($errors->has('steam_profile'))
+            <p class="error-msg">{{ $errors->first('steam_profile') }}</p>
+        @endif
+        
+        @if (session()->has('steam_success'))
+            <p class="success-msg">✓ {{ session('steam_success') }}</p>
+        @endif
+        
+        @if (session()->has('steam_error'))
+            <p class="error-msg">✗ {{ session('steam_error') }}</p>
+        @endif
+    </div>
+
     <div class="game-grid">
 
     @forelse($games as $game)
@@ -139,6 +169,83 @@
 .empty-state{
     margin-top:40px;
     color:#00ff9c88;
+}
+
+/* STEAM IMPORT SECTION */
+.steam-import-section{
+    margin-bottom:40px;
+    padding:20px;
+    border:1px solid #00ff9c55;
+    background:linear-gradient(135deg, #00ff9c11 0%, #0099ff11 100%);
+}
+
+.steam-import-section h3{
+    margin-bottom:15px;
+    font-size:16px;
+    color:#00ff9c;
+}
+
+.steam-form{
+    display:flex;
+    gap:10px;
+}
+
+.form-group{
+    display:flex;
+    gap:10px;
+    width:100%;
+}
+
+.steam-input{
+    flex:1;
+    padding:10px 15px;
+    background:#050505;
+    border:1px solid #00ff9c;
+    color:#fff;
+    font-family:monospace;
+    font-size:14px;
+}
+
+.steam-input:focus{
+    outline:none;
+    border-color:#0099ff;
+    box-shadow:0 0 10px #0099ff55;
+}
+
+.steam-btn{
+    padding:10px 25px;
+    background:linear-gradient(135deg, #00ff9c, #0099ff);
+    border:none;
+    color:#000;
+    font-weight:bold;
+    cursor:pointer;
+    font-family:monospace;
+    transition:0.3s;
+}
+
+.steam-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 15px #00ff9c88;
+}
+
+.success-msg, .error-msg{
+    margin-top:10px;
+    padding:10px;
+    border-left:4px solid;
+    font-family:monospace;
+    font-size:13px;
+}
+
+.success-msg{
+    border-color:#00ff9c;
+    color:#00ff9c;
+    background:#00ff9c11;
+}
+
+.error-msg{
+    border-color:#ff0066;
+    color:#ff0066;
+    background:#ff006611;
 }
 
 </style>

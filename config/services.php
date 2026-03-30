@@ -34,8 +34,13 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+
     'rawg' => [
-    'key' => env('RAWG_API_KEY'),
+        'key' => env('RAWG_API_KEY'),
+    ],
+
+    'steam' => [
+        'key' => env('STEAM_API_KEY'),
     ],
 
 ];

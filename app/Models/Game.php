@@ -7,6 +7,7 @@ class Game extends Model
 {
     protected $fillable = [
         'rawg_id',
+        'steam_appid',
         'title',
         'cover_url',
         'release_date'

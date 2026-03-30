@@ -57,6 +57,10 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/library/remove/{id}', [LibraryController::class, 'destroy'])
         ->name('library.remove');
+
+    Route::post('/library/import-steam', [LibraryController::class, 'importFromSteam'])
+        ->name('library.import-steam');
+
     Route::get('/dashboard', function () {
     return view('landing');
 })->name('dashboard');
