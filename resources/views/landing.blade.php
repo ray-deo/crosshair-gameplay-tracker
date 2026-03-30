@@ -9,7 +9,6 @@
         @auth
             <a href="#command" data-target="command" class="nav-chip">COMMAND</a>
             <a href="#continue" data-target="continue" class="nav-chip">CONTINUE</a>
-            <a href="#activity" data-target="activity" class="nav-chip">ACTIVITY</a>
         @endauth
         <a href="#features" data-target="features" class="nav-chip">FEATURES</a>
     </div>
@@ -112,41 +111,6 @@
             </div>
         </section>
 
-        <section class="interactive-grid reveal" id="activity" data-section="activity">
-            <div class="interactive-panel">
-                <div class="section-head">
-                    <h2>Onboarding Matrix</h2>
-                    <span>{{ $checklist['completion'] ?? 0 }}% complete</span>
-                </div>
-
-                <div class="meter"><span style="width: {{ $checklist['completion'] ?? 0 }}%"></span></div>
-
-                <ul class="checklist">
-                    <li class="{{ ($checklist['has_first_game'] ?? false) ? 'done' : '' }}">Add your first game</li>
-                    <li class="{{ ($checklist['has_note'] ?? false) ? 'done' : '' }}">Write a note in a game page</li>
-                    <li class="{{ ($checklist['has_screenshot'] ?? false) ? 'done' : '' }}">Upload a screenshot</li>
-                    <li class="{{ ($checklist['has_favorite'] ?? false) ? 'done' : '' }}">Mark a game as favorite</li>
-                </ul>
-            </div>
-
-            <div class="interactive-panel">
-                <div class="section-head">
-                    <h2>Activity Feed</h2>
-                    <span>Latest gameplay moments</span>
-                </div>
-
-                <div class="activity-feed">
-                    @forelse($activities as $event)
-                        <a href="{{ route('game.show', $event['game_id']) }}" class="activity-item">
-                            <span>{{ $event['label'] }}</span>
-                            <small>{{ \Illuminate\Support\Carbon::parse($event['at'])->diffForHumans() }}</small>
-                        </a>
-                    @empty
-                        <p class="empty-line">No activity yet. Start by adding a game.</p>
-                    @endforelse
-                </div>
-            </div>
-        </section>
     @endauth
 
     <section class="split reveal" id="features" data-section="features">
@@ -287,11 +251,6 @@ body {
 .nav-chip[data-target="continue"] {
     color: #76c7ff;
     border-color: rgba(118, 199, 255, 0.72);
-}
-
-.nav-chip[data-target="activity"] {
-    color: #b8ff4d;
-    border-color: rgba(184, 255, 77, 0.72);
 }
 
 .nav-chip[data-target="features"] {
@@ -492,57 +451,6 @@ body {
     flex-wrap: wrap;
 }
 
-.interactive-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-}
-
-.interactive-panel {
-    border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
-    padding: 18px;
-    background: color-mix(in srgb, var(--accent) 4%, transparent);
-}
-
-.checklist {
-    list-style: none;
-    margin: 14px 0 0;
-    padding: 0;
-}
-
-.checklist li {
-    padding: 8px 10px;
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    margin-bottom: 8px;
-    font-size: 13px;
-    color: color-mix(in srgb, var(--text) 70%, transparent);
-}
-
-.checklist li.done {
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
-    color: var(--text);
-}
-
-.activity-feed {
-    display: grid;
-    gap: 8px;
-}
-
-.activity-item {
-    border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
-    padding: 9px 10px;
-    text-decoration: none;
-    color: var(--text);
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    font-size: 13px;
-}
-
-.activity-item small {
-    color: color-mix(in srgb, var(--text) 68%, transparent);
-}
-
 .empty-line {
     font-size: 13px;
     color: color-mix(in srgb, var(--text) 65%, transparent);
@@ -637,9 +545,6 @@ body {
         grid-column: span 2;
     }
 
-    .interactive-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (max-width: 960px) {
@@ -656,7 +561,6 @@ body {
     }
 
     .interactive-section,
-    .interactive-grid,
     .split,
     .split.reverse {
         padding: 0 20px;
