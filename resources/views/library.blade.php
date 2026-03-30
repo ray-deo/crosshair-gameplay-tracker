@@ -9,6 +9,20 @@
         <p class="subtext">Library Initialized</p>
     </div>
 
+    <div class="library-sorter">
+        <form method="GET" action="{{ route('library') }}" class="sort-form">
+            <label for="sort">Sort by</label>
+            <select id="sort" name="sort" onchange="this.form.submit()">
+                <option value="favorites" {{ ($sort ?? 'favorites') === 'favorites' ? 'selected' : '' }}>Favorites First</option>
+                <option value="recent" {{ ($sort ?? 'favorites') === 'recent' ? 'selected' : '' }}>Recently Updated</option>
+                <option value="title_asc" {{ ($sort ?? 'favorites') === 'title_asc' ? 'selected' : '' }}>Title A-Z</option>
+                <option value="title_desc" {{ ($sort ?? 'favorites') === 'title_desc' ? 'selected' : '' }}>Title Z-A</option>
+                <option value="progress_desc" {{ ($sort ?? 'favorites') === 'progress_desc' ? 'selected' : '' }}>Highest Progress</option>
+                <option value="status" {{ ($sort ?? 'favorites') === 'status' ? 'selected' : '' }}>Status</option>
+            </select>
+        </form>
+    </div>
+
     <!-- STEAM IMPORT SECTION -->
     <div class="steam-import-section">
         <h3>Import from Steam</h3>
@@ -106,6 +120,35 @@
 /* USER INFO */
 .dashboard-user{
     margin-bottom:25px;
+}
+
+.library-sorter{
+    margin-bottom:20px;
+    display:flex;
+    justify-content:flex-end;
+}
+
+.sort-form{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:#00ff9c;
+    font-family:monospace;
+    font-size:13px;
+}
+
+.sort-form select{
+    background:#050505;
+    border:1px solid #00ff9c;
+    color:#00ff9c;
+    padding:7px 10px;
+    font-family:monospace;
+    font-size:13px;
+}
+
+.sort-form select:focus{
+    outline:none;
+    box-shadow:0 0 8px #00ff9c55;
 }
 
 .subtext{

@@ -10,16 +10,43 @@ use Illuminate\Support\Facades\Schema;
 
 class LibraryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $games = Auth::user()
-            ->games()
-            ->withPivot('status', 'progress', 'is_favorite')
-            ->orderByPivot('is_favorite', 'desc')
-            ->orderByPivot('updated_at', 'desc')
-            ->get();
+        $sort = $request->get('sort', 'favorites');
 
-        return view('library', compact('games'));
+        $gamesQuery = Auth::user()
+            ->games()
+            ->withPivot('status', 'progress', 'is_favorite');
+
+        switch ($sort) {
+            case 'title_asc':
+                $gamesQuery->orderBy('games.title', 'asc');
+                break;
+            case 'title_desc':
+                $gamesQuery->orderBy('games.title', 'desc');
+                break;
+            case 'progress_desc':
+                $gamesQuery->orderByPivot('progress', 'desc')
+                    ->orderByPivot('updated_at', 'desc');
+                break;
+            case 'recent':
+                $gamesQuery->orderByPivot('updated_at', 'desc');
+                break;
+            case 'status':
+                $gamesQuery->orderByPivot('status', 'asc')
+                    ->orderBy('games.title', 'asc');
+                break;
+            case 'favorites':
+            default:
+                $sort = 'favorites';
+                $gamesQuery->orderByPivot('is_favorite', 'desc')
+                    ->orderByPivot('updated_at', 'desc');
+                break;
+        }
+
+        $games = $gamesQuery->get();
+
+        return view('library', compact('games', 'sort'));
     }
 
     public function add(Request $request)
