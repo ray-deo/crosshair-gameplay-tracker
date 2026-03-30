@@ -10,8 +10,10 @@ class UserGame extends Model
         'user_id',
         'game_id',
         'status',
-        'hours_played',
-        'completion_percentage'
+        'progress',
+        'started_at',
+        'completed_at',
+        'is_favorite',
     ];
 
     public function user()

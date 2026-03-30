@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Note;
 use App\Models\Screenshot;
+use App\Models\UserGame;
 use App\Models\Video;
 
 
@@ -55,12 +56,17 @@ class GameController extends Controller
             ->where('user_id', auth()->id())
             ->get();
 
+        $userGame = UserGame::where('user_id', auth()->id())
+            ->where('game_id', $id)
+            ->first();
+
         return view('game.show', [
             'game' => $game,
             'data' => $data,
             'notes' => $notes,
             'screenshots' => $screenshots,
             'videos' => $videos,
+            'userGame' => $userGame,
         ]);
     }
 }

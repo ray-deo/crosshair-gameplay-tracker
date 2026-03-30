@@ -31,6 +31,45 @@
         <div class="info">
             <h1>{{ $game->title }}</h1>
 
+            @php
+                $currentStatus = $userGame->status ?? 'backlog';
+                $currentProgress = (int) ($userGame->progress ?? 0);
+            @endphp
+
+            <div class="progress-panel">
+                <div class="progress-topline">
+                    <span class="status-pill">Status: {{ ucfirst($currentStatus) }}</span>
+                    <span class="progress-label">{{ $currentProgress }}%</span>
+                </div>
+                <div class="progress-track"><span style="width: {{ $currentProgress }}%"></span></div>
+
+                <div class="progress-actions">
+                    <form method="POST" action="{{ route('game.start', $game->id) }}">
+                        @csrf
+                        <button type="submit" class="add-btn">Start</button>
+                    </form>
+
+                    <form method="POST" action="{{ route('game.complete', $game->id) }}">
+                        @csrf
+                        <button type="submit" class="add-btn">Mark Complete</button>
+                    </form>
+                </div>
+
+                <form method="POST" action="{{ route('game.progress', $game->id) }}" class="progress-form">
+                    @csrf
+                    <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        name="progress"
+                        value="{{ $currentProgress }}"
+                        oninput="this.nextElementSibling.textContent = this.value + '%'"
+                    >
+                    <span class="range-value">{{ $currentProgress }}%</span>
+                    <button type="submit" class="add-btn">Update Progress</button>
+                </form>
+            </div>
+
             @if(isset($data['released']))
                 <span class="badge">Released: {{ $data['released'] }}</span>
             @endif
@@ -305,6 +344,72 @@
     background: color-mix(in srgb, var(--game-accent) 12%, transparent);
     font-size: 0.85rem;
     letter-spacing: 0.04em;
+}
+
+.progress-panel {
+    margin: 12px 0 14px;
+    border: 1px solid color-mix(in srgb, var(--game-accent) 48%, transparent);
+    background: color-mix(in srgb, var(--game-accent) 7%, transparent);
+    padding: 12px;
+}
+
+.progress-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.status-pill {
+    border: 1px solid color-mix(in srgb, var(--game-accent) 65%, transparent);
+    padding: 4px 8px;
+    font-size: 0.8rem;
+}
+
+.progress-label {
+    font-size: 0.9rem;
+    color: color-mix(in srgb, var(--game-text) 90%, white);
+}
+
+.progress-track {
+    height: 6px;
+    background: color-mix(in srgb, var(--game-accent) 16%, transparent);
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.progress-track span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--game-accent) 65%, black), var(--game-accent));
+}
+
+.progress-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.progress-actions form {
+    margin: 0;
+}
+
+.progress-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.progress-form input[type="range"] {
+    width: 220px;
+    accent-color: var(--game-accent);
+}
+
+.range-value {
+    min-width: 42px;
+    font-size: 0.82rem;
 }
 
 .description {

@@ -8,57 +8,76 @@ use App\Models\UserGame;
 
 class GameProgressController extends Controller
 {
-    // 🎮 START GAME
     public function start($id)
     {
-        $entry = UserGame::where('user_id', Auth::id())
-            ->where('game_id', $id)
-            ->firstOrFail();
+        $entry = UserGame::firstOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'game_id' => $id,
+            ],
+            [
+                'status' => 'backlog',
+                'progress' => 0,
+            ]
+        );
 
         $entry->update([
             'status' => 'playing',
-            'started_at' => now()
+            'started_at' => $entry->started_at ?? now(),
+            'completed_at' => null,
         ]);
 
         return back();
     }
 
-    // 📊 UPDATE PROGRESS
     public function updateProgress(Request $request, $id)
     {
         $request->validate([
-            'progress' => 'required|integer|min:0|max:100'
+            'progress' => 'required|integer|min:0|max:100',
         ]);
 
-        $entry = UserGame::where('user_id', Auth::id())
-            ->where('game_id', $id)
-            ->firstOrFail();
+        $entry = UserGame::firstOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'game_id' => $id,
+            ],
+            [
+                'status' => 'backlog',
+                'progress' => 0,
+            ]
+        );
+
+        $progress = (int) $request->progress;
+        $status = $progress === 100 ? 'completed' : ($progress > 0 ? 'playing' : 'backlog');
 
         $entry->update([
-            'progress' => $request->progress,
-            'status' => $request->progress == 100 ? 'completed' : 'playing'
+            'progress' => $progress,
+            'status' => $status,
+            'started_at' => $progress > 0 ? ($entry->started_at ?? now()) : null,
+            'completed_at' => $progress === 100 ? now() : null,
         ]);
-
-        if ($request->progress == 100) {
-            $entry->update([
-                'completed_at' => now()
-            ]);
-        }
 
         return back();
     }
 
-    // ✅ COMPLETE GAME
     public function complete($id)
     {
-        $entry = UserGame::where('user_id', Auth::id())
-            ->where('game_id', $id)
-            ->firstOrFail();
+        $entry = UserGame::firstOrCreate(
+            [
+                'user_id' => Auth::id(),
+                'game_id' => $id,
+            ],
+            [
+                'status' => 'backlog',
+                'progress' => 0,
+            ]
+        );
 
         $entry->update([
             'status' => 'completed',
             'progress' => 100,
-            'completed_at' => now()
+            'started_at' => $entry->started_at ?? now(),
+            'completed_at' => now(),
         ]);
 
         return back();

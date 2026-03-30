@@ -84,6 +84,13 @@ Route::middleware('auth')->group(function () {
     ->name('game.show')
     ->middleware('auth');
 
+    Route::post('/game/{id}/start', [GameProgressController::class, 'start'])
+        ->name('game.start');
+    Route::post('/game/{id}/progress', [GameProgressController::class, 'updateProgress'])
+        ->name('game.progress');
+    Route::post('/game/{id}/complete', [GameProgressController::class, 'complete'])
+        ->name('game.complete');
+
     Route::post('/game/{id}/notes', [NoteController::class, 'store'])
         ->name('notes.store');
     Route::put('/notes/{id}', [NoteController::class, 'update'])
