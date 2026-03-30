@@ -26,26 +26,33 @@ class LibraryController extends Controller
             'title' => 'required',
             'cover' => 'nullable',
             'rawg_id' => 'required',
-        ]);
+                $steam = new SteamService();
+                \Log::info('Steam import started for: ' . $request->steam_profile);
 
         $game = Game::firstOrCreate(
             ['rawg_id' => $request->rawg_id],
-            [
-                'title' => $request->title,
+                if (!$steamId) {
+                    \Log::warning('Could not resolve Steam ID from: ' . $request->steam_profile);
+                    return back()->with('steam_error', 'Invalid Steam profile. Try: https://steamcommunity.com/profiles/YOUR_ID or https://steamcommunity.com/id/username or just your Steam ID.');
                 'cover_url' => $request->cover ?? null,
             ]
+                \Log::info('Resolved Steam ID: ' . $steamId);
         );
 
         auth()->user()->games()->syncWithoutDetaching([
+                    \Log::info('Found ' . count($ownedGames) . ' games');
             $game->id => [
                 'status' => 'backlog',
-                'progress' => 0,
+                        return back()->with('steam_error', 'No games found - profile might be private. Go to Steam > Profile > Edit Profile > Privacy Settings > Library visibility = PUBLIC.');
             ]
         ]);
 
         return redirect('/library');
+                    $appIds = array_column($gamesToImport, 'appid');
+                    \Log::info('Fetching details for ' . count($appIds) . ' apps: ' . implode(',', $appIds));
     }
 
+                    \Log::info('Got details for ' . count($gameDetails) . ' games');
     public function destroy($id)
     {
         $user = auth()->user();
@@ -74,10 +81,11 @@ class LibraryController extends Controller
 
             if (empty($ownedGames)) {
                 return back()->with('steam_error', 'No games found or profile is private. Make sure your Steam library is set to public.');
-            }
+                    \Log::info('Successfully imported ' . $imported . ' games');
+                    return back()->with('steam_success', "✓ Imported {$imported} games from Steam! (up to 50 per import)");
 
-            // Fetch top 50 games (to respect rate limits)
-            $gamesToImport = array_slice($ownedGames, 0, 50);
+                    \Log::error('Steam import failed: ' . $e->getFile() . ':' . $e->getLine() . ' ' . $e->getMessage());
+                    return back()->with('steam_error', 'Error: ' . $e->getMessage());
             $gameDetails = $steam->getGameDetailsBatch(array_column($gamesToImport, 'appid'));
 
             $user = auth()->user();

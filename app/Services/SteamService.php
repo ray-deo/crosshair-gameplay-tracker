@@ -19,18 +19,31 @@ class SteamService
      */
     public function resolveSteamId($profileInput): ?string
     {
-        // If it's already a numeric Steam ID
-        if (is_numeric($profileInput) && strlen($profileInput) >= 17) {
-            return $profileInput;
-        }
+            $profileInput = trim($profileInput);
 
-        // Try to resolve vanity URL (custom profile username)
-        if (strpos($profileInput, 'steamcommunity.com') !== false || !is_numeric($profileInput)) {
-            $vanity = basename($profileInput);
-            return $this->resolveVanityUrl($vanity);
-        }
+            // Check if it's a full Steam profile URL
+            if (strpos($profileInput, 'steamcommunity.com') !== false) {
+                // Extract from URL like steamcommunity.com/profiles/76561198... or steamcommunity.com/id/username
+                if (preg_match('/\/profiles\/(\d+)/', $profileInput, $matches)) {
+                    // It's a numeric profile ID
+                    return $matches[1];
+                } elseif (preg_match('/\/id\/([^\/]+)/', $profileInput, $matches)) {
+                    // It's a vanity URL (custom username)
+                    return $this->resolveVanityUrl($matches[1]);
+                }
+            }
 
-        return null;
+            // If it's already a numeric Steam ID (17 digits)
+            if (is_numeric($profileInput) && strlen($profileInput) >= 17) {
+                return $profileInput;
+            }
+
+            // If it doesn't look like a URL, try treating it as a vanity username
+            if (!is_numeric($profileInput)) {
+                return $this->resolveVanityUrl($profileInput);
+            }
+
+            return null;
     }
 
     /**
@@ -39,15 +52,25 @@ class SteamService
     private function resolveVanityUrl($vanity): ?string
     {
         try {
+            if (!$this->apiKey) {
+                \Log::error('Steam API key not configured');
+                return null;
+            }
+
             $response = Http::timeout(10)->get("{$this->baseUrl}/ISteamUser/ResolveVanityURL/v0001/", [
                 'key' => $this->apiKey,
                 'vanityurl' => $vanity,
             ]);
 
             $data = $response->json();
+            \Log::info('Vanity URL resolution response: ' . json_encode($data));
 
-            if ($data['response']['success'] ?? false) {
-                return $data['response']['steamid'] ?? null;
+            if (isset($data['response']) && ($data['response']['success'] ?? 0) == 1) {
+                $steamId = $data['response']['steamid'] ?? null;
+                \Log::info("Resolved vanity '{$vanity}' to Steam ID: {$steamId}");
+                return $steamId;
+            } else {
+                \Log::warning("Failed to resolve vanity '{$vanity}': " . json_encode($data));
             }
         } catch (\Exception $e) {
             \Log::error('Steam vanity URL resolution failed: ' . $e->getMessage());
