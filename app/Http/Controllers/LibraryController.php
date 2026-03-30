@@ -93,7 +93,7 @@ class LibraryController extends Controller
 
         $user = auth()->user();
 
-        $existing = $user->games()->where('game_id', $id)->first();
+        $existing = $user->games()->withPivot('is_favorite')->where('game_id', $id)->first();
         if (!$existing) {
             return back()->with('error', 'Game not found in your library.');
         }
