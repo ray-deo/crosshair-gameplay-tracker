@@ -7,7 +7,16 @@
     {{-- HERO --}}
     <section class="hero">
         <div class="hero-box">
-            <h1>Welcome to Crosshair</h1>
+            <h1 id="hero-welcome" data-default-text="Welcome to Crosshair">
+                @auth
+                    INITIALIZING...
+                @else
+                    Welcome to Crosshair
+                @endauth
+            </h1>
+            @auth
+                <div id="boot-sequence" class="boot-sequence" aria-live="polite"></div>
+            @endauth
             <p>Add games, track status, and grind progress.</p>
 
             @auth
@@ -128,6 +137,44 @@ body {
     font-size: 36px;
     color: #00ff9c;
     font-family: monospace;
+    min-height: 48px;
+}
+
+.boot-sequence {
+    margin: 8px auto 0;
+    max-width: 620px;
+    min-height: 42px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #00ff9ca8;
+    text-align: left;
+    border-left: 2px solid #00ff9c55;
+    padding-left: 10px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.boot-sequence.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.boot-line {
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    border-right: 1px solid #00ff9c99;
+    animation: typing 0.5s steps(20, end) forwards, caret 0.7s step-end infinite;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes caret {
+    50% { border-color: transparent; }
 }
 
 .hero-box p {
@@ -274,6 +321,9 @@ body {
 (() => {
     const sections = document.querySelectorAll('.split');
     const progressBar = document.getElementById('scroll-progress');
+    const heroWelcome = document.getElementById('hero-welcome');
+    const bootSequence = document.getElementById('boot-sequence');
+    const authName = @json(auth()->check() ? auth()->user()->name : null);
 
     if (!sections.length || !progressBar) {
         return;
@@ -317,6 +367,49 @@ body {
     window.addEventListener('scroll', updateEffects, { passive: true });
     window.addEventListener('resize', updateEffects);
     updateEffects();
+
+    if (heroWelcome && bootSequence && authName) {
+        const lines = [
+            '[BOOT] Session token verified',
+            '[SYNC] Pulling player profile',
+            '[READY] Welcome to Crosshair, ' + authName
+        ];
+
+        const typeText = (el, text, speed = 24) => {
+            return new Promise((resolve) => {
+                let i = 0;
+                el.textContent = '';
+                const tick = () => {
+                    i += 1;
+                    el.textContent = text.slice(0, i);
+                    if (i < text.length) {
+                        setTimeout(tick, speed);
+                    } else {
+                        resolve();
+                    }
+                };
+                tick();
+            });
+        };
+
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        (async () => {
+            bootSequence.classList.add('is-visible');
+
+            for (const line of lines) {
+                const row = document.createElement('div');
+                row.className = 'boot-line';
+                bootSequence.appendChild(row);
+                await typeText(row, line, 22);
+                row.style.borderRight = 'none';
+                row.style.width = '100%';
+                await wait(180);
+            }
+
+            await typeText(heroWelcome, 'Welcome to Crosshair, ' + authName, 26);
+        })();
+    }
 })();
 </script>
 @endsection
