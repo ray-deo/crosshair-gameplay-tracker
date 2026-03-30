@@ -18,6 +18,8 @@
     --bg-layer-2:rgba(22,132,255,0.16);
     --bg-layer-3:rgba(0,0,0,0.7);
     --nav-glow:0 0 12px rgba(0,245,180,0.45);
+    --flow-speed:1;
+    --drift-amount:16;
 }
 
 html[data-theme="synth"]{
@@ -30,6 +32,8 @@ html[data-theme="synth"]{
     --bg-layer-2:rgba(114,90,255,0.2);
     --bg-layer-3:rgba(8,0,15,0.72);
     --nav-glow:0 0 12px rgba(255,79,216,0.45);
+    --flow-speed:1.08;
+    --drift-amount:20;
 }
 
 html[data-theme="toxic"]{
@@ -42,6 +46,8 @@ html[data-theme="toxic"]{
     --bg-layer-2:rgba(76,255,176,0.14);
     --bg-layer-3:rgba(2,9,0,0.74);
     --nav-glow:0 0 12px rgba(181,255,42,0.42);
+    --flow-speed:0.94;
+    --drift-amount:14;
 }
 
 html[data-theme="chrome"]{
@@ -54,6 +60,8 @@ html[data-theme="chrome"]{
     --bg-layer-2:rgba(107,142,255,0.16);
     --bg-layer-3:rgba(1,6,14,0.72);
     --nav-glow:0 0 12px rgba(87,211,255,0.45);
+    --flow-speed:1.15;
+    --drift-amount:18;
 }
 
 /* Legacy saved keys */

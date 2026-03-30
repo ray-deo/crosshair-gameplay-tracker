@@ -10,6 +10,7 @@ use App\Http\Controllers\GameProgressController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ScreenshotController;
 use App\Http\Controllers\VideoController;
+use App\Http\Controllers\LandingController;
 
 
 /*
@@ -18,9 +19,7 @@ use App\Http\Controllers\VideoController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', function () {
-    return view('landing');
-})->name('home');
+Route::get('/', [LandingController::class, 'index'])->name('home');
 
 /*
 |--------------------------------------------------------------------------
@@ -65,9 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/library/import-steam', [LibraryController::class, 'importFromSteam'])
         ->name('library.import-steam');
 
-    Route::get('/dashboard', function () {
-    return view('landing');
-})->name('dashboard');
+    Route::get('/dashboard', [LandingController::class, 'index'])->name('dashboard');
 
     /*
     |--------------------------------------------------------------------------
