@@ -9,6 +9,7 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\GameProgressController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ScreenshotController;
+use App\Http\Controllers\VideoController;
 
 
 /*
@@ -94,6 +95,11 @@ Route::middleware('auth')->group(function () {
         ->name('screenshots.upload');
     Route::delete('/screenshots/{id}', [ScreenshotController::class, 'destroy'])
         ->name('screenshots.destroy');
+
+    Route::post('/game/{id}/videos', [VideoController::class, 'upload'])
+        ->name('videos.upload');
+    Route::delete('/videos/{id}', [VideoController::class, 'destroy'])
+        ->name('videos.destroy');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {

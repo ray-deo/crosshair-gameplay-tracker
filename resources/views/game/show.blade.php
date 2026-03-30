@@ -136,6 +136,56 @@
                 @endforelse
             </div>
         </div>
+
+        <div class="videos-box">
+            <h3>VIDEOS</h3>
+
+            <form method="POST"
+                  action="{{ route('videos.upload', $game->id) }}"
+                  enctype="multipart/form-data">
+                @csrf
+
+                @if(session('video_success'))
+                    <p class="upload-success">{{ session('video_success') }}</p>
+                @endif
+
+                @if(session('video_error'))
+                    <p class="upload-error">{{ session('video_error') }}</p>
+                @endif
+
+                @if($errors->has('videos') || $errors->has('videos.*'))
+                    <p class="upload-error">{{ $errors->first('videos') ?: $errors->first('videos.*') }}</p>
+                @endif
+
+                <label class="file-pick-label">
+                    <input type="file" name="videos[]" multiple accept="video/*">
+                    <span>Choose File</span>
+                </label>
+
+                <div class="upload-actions">
+                    <button type="submit">Upload</button>
+                </div>
+            </form>
+
+            <div class="videos-grid">
+                @forelse($videos as $video)
+                    <div class="video-card">
+                        <video controls preload="metadata" class="video-player">
+                            <source src="{{ asset('storage/' . $video->video_path) }}">
+                            Your browser does not support video playback.
+                        </video>
+
+                        <form method="POST" action="{{ route('videos.destroy', $video->id) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="delete-shot">X</button>
+                        </form>
+                    </div>
+                @empty
+                    <p>No videos yet.</p>
+                @endforelse
+            </div>
+        </div>
     </div>
 </div>
 
@@ -290,7 +340,8 @@
 }
 
 .box,
-.screenshots-box {
+.screenshots-box,
+.videos-box {
     border: 1px solid color-mix(in srgb, var(--game-accent) 55%, transparent);
     padding: 20px;
     min-height: 260px;
@@ -301,7 +352,8 @@
 }
 
 .box h3,
-.screenshots-box h3 {
+.screenshots-box h3,
+.videos-box h3 {
     margin-top: 0;
     margin-bottom: 14px;
     letter-spacing: 0.12em;
@@ -453,12 +505,26 @@
     margin-top: 15px;
 }
 
+.videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
 .shot-card {
     position: relative;
     border: 1px solid color-mix(in srgb, var(--game-accent) 55%, transparent);
     padding: 6px;
     background: rgba(0,0,0,0.7);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.video-card {
+    position: relative;
+    border: 1px solid color-mix(in srgb, var(--game-accent) 55%, transparent);
+    padding: 6px;
+    background: rgba(0,0,0,0.7);
 }
 
 .shot-card:hover {
@@ -471,6 +537,14 @@
     width: 100%;
     height: 120px;
     object-fit: cover;
+    border: 1px solid color-mix(in srgb, var(--game-accent) 40%, transparent);
+}
+
+.video-player {
+    display: block;
+    width: 100%;
+    height: 140px;
+    background: #000;
     border: 1px solid color-mix(in srgb, var(--game-accent) 40%, transparent);
 }
 

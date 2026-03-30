@@ -34,4 +34,9 @@ class Game extends Model
 {
     return $this->hasMany(Screenshot::class, 'game_id');
 }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class, 'game_id');
+    }
 }
