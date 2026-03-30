@@ -103,17 +103,10 @@ Route::middleware('auth')->group(function () {
         ->name('videos.upload');
     Route::delete('/videos/{id}', [VideoController::class, 'destroy'])
         ->name('videos.destroy');
+});
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', function () {
         return 'Admin Panel';
     });
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/library', function () {
-        return 'User Library';
-    });
-});
-Route::get('/library', [LibraryController::class, 'index']);
 });
