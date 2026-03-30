@@ -366,6 +366,10 @@ body {
     transition: opacity calc(0.65s * var(--flow-speed, 1)) ease, transform calc(0.65s * var(--flow-speed, 1)) ease;
 }
 
+[data-section] {
+    scroll-margin-top: 170px;
+}
+
 .boot-line {
     white-space: nowrap;
     overflow: hidden;
