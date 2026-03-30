@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Screenshot;
+use App\Models\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,6 +18,7 @@ class LandingController extends Controller
         $viewData = [
             'stats' => null,
             'continueGames' => collect(),
+            'mediaItems' => collect(),
             'randomGameId' => null,
             'recommendedGameId' => null,
         ];
@@ -64,6 +67,38 @@ class LandingController extends Controller
                 ->orderByDesc('progress')
                 ->value('game_id');
 
+            $screenshots = Screenshot::where('user_id', $user->id)
+                ->with('game')
+                ->latest()
+                ->take(8)
+                ->get()
+                ->map(fn ($s) => [
+                    'type' => 'screenshot',
+                    'path' => $s->image_path,
+                    'game_id' => $s->game_id,
+                    'game_title' => $s->game->title ?? 'Unknown',
+                    'created_at' => $s->created_at,
+                ]);
+
+            $videos = Video::where('user_id', $user->id)
+                ->with('game')
+                ->latest()
+                ->take(8)
+                ->get()
+                ->map(fn ($v) => [
+                    'type' => 'video',
+                    'path' => $v->video_path,
+                    'game_id' => $v->game_id,
+                    'game_title' => $v->game->title ?? 'Unknown',
+                    'created_at' => $v->created_at,
+                ]);
+
+            $mediaItems = $screenshots
+                ->merge($videos)
+                ->sortByDesc('created_at')
+                ->take(12)
+                ->values();
+
             $viewData = [
                 'stats' => [
                     'total' => $totalGames,
@@ -73,6 +108,7 @@ class LandingController extends Controller
                     'avg_progress' => $avgProgress,
                 ],
                 'continueGames' => $continueGames,
+                'mediaItems' => $mediaItems,
                 'randomGameId' => $randomGameId,
                 'recommendedGameId' => $recommendedGameId,
             ];

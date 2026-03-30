@@ -9,6 +9,7 @@
         @auth
             <a href="#command" data-target="command" class="nav-chip">COMMAND</a>
             <a href="#continue" data-target="continue" class="nav-chip">CONTINUE</a>
+            <a href="#media" data-target="media" class="nav-chip">MEDIA</a>
         @endauth
         <a href="#features" data-target="features" class="nav-chip">FEATURES</a>
     </div>
@@ -108,6 +109,33 @@
                 @else
                     <a href="/search" class="retro-btn secondary">WHAT SHOULD I PLAY?</a>
                 @endif
+            </div>
+        </section>
+
+        <section class="interactive-section reveal" id="media" data-section="media">
+            <div class="section-head">
+                <h2>Media Wall</h2>
+                <span>Your captured gameplay moments</span>
+            </div>
+
+            <div class="media-grid">
+                @forelse($mediaItems as $item)
+                    <a href="{{ route('game.show', $item['game_id']) }}" class="media-item" title="{{ $item['game_title'] }}">
+                        @if($item['type'] === 'screenshot')
+                            <img src="{{ asset('storage/' . $item['path']) }}" alt="Screenshot from {{ $item['game_title'] }}" class="media-content">
+                        @else
+                            <video class="media-content" preload="metadata">
+                                <source src="{{ asset('storage/' . $item['path']) }}">
+                            </video>
+                            <div class="video-badge">▶</div>
+                        @endif
+                        <div class="media-overlay">
+                            <p>{{ $item['game_title'] }}</p>
+                        </div>
+                    </a>
+                @empty
+                    <p class="empty-line">No media yet. Upload screenshots or videos from your game pages.</p>
+                @endforelse
             </div>
         </section>
 
@@ -251,6 +279,11 @@ body {
 .nav-chip[data-target="continue"] {
     color: #76c7ff;
     border-color: rgba(118, 199, 255, 0.72);
+}
+
+.nav-chip[data-target="media"] {
+    color: #ff1493;
+    border-color: rgba(255, 20, 147, 0.72);
 }
 
 .nav-chip[data-target="features"] {
@@ -451,6 +484,70 @@ body {
     flex-wrap: wrap;
 }
 
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.media-item {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    aspect-ratio: 1;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: #000;
+}
+
+.media-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.media-content {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 42px;
+    color: var(--accent);
+    opacity: 0.8;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+}
+
+.media-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.88), transparent);
+    padding: 12px 8px 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.media-item:hover .media-overlay {
+    opacity: 1;
+}
+
+.media-overlay p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .empty-line {
     font-size: 13px;
     color: color-mix(in srgb, var(--text) 65%, transparent);
@@ -545,6 +642,10 @@ body {
         grid-column: span 2;
     }
 
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
 }
 
 @media (max-width: 960px) {
@@ -576,6 +677,11 @@ body {
     .image-box {
         width: 100%;
         max-width: 600px;
+    }
+
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
     }
 }
 </style>
