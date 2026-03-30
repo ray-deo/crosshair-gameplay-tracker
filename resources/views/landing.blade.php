@@ -250,13 +250,53 @@ body {
     font-size: 12px;
     letter-spacing: 0.06em;
     text-decoration: none;
-    transition: 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-chip::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: currentColor;
+    opacity: 0.9;
 }
 
 .nav-chip.active,
 .nav-chip:hover {
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
-    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 35%, transparent);
+    transform: translateY(-1px);
+    background: color-mix(in srgb, currentColor 16%, transparent);
+    box-shadow: 0 0 14px color-mix(in srgb, currentColor 40%, transparent);
+}
+
+.nav-chip[data-target="hero"] {
+    color: #66ffd9;
+    border-color: rgba(102, 255, 217, 0.7);
+}
+
+.nav-chip[data-target="command"] {
+    color: #ff6bd6;
+    border-color: rgba(255, 107, 214, 0.7);
+}
+
+.nav-chip[data-target="continue"] {
+    color: #76c7ff;
+    border-color: rgba(118, 199, 255, 0.72);
+}
+
+.nav-chip[data-target="activity"] {
+    color: #b8ff4d;
+    border-color: rgba(184, 255, 77, 0.72);
+}
+
+.nav-chip[data-target="features"] {
+    color: #ffb763;
+    border-color: rgba(255, 183, 99, 0.72);
 }
 
 .hero {
