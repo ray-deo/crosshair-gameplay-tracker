@@ -59,6 +59,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/library/remove/{id}', [LibraryController::class, 'destroy'])
         ->name('library.remove');
 
+    Route::post('/library/favorite/{id}', [LibraryController::class, 'toggleFavorite'])
+        ->name('library.favorite');
+
     Route::post('/library/import-steam', [LibraryController::class, 'importFromSteam'])
         ->name('library.import-steam');
 

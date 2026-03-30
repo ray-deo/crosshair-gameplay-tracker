@@ -57,6 +57,16 @@
 
         </a>
 
+        <form method="POST" action="{{ route('library.favorite', $game->id) }}" class="favorite-form">
+            @csrf
+            <button
+                type="submit"
+                class="favorite-btn {{ $game->pivot->is_favorite ? 'is-favorite' : '' }}"
+            >
+                {{ $game->pivot->is_favorite ? 'FAVORITED' : 'FAVORITE' }}
+            </button>
+        </form>
+
         <!-- REMOVE BUTTON -->
         <form method="POST" action="{{ route('library.remove', $game->id) }}" class="remove-form">
             @csrf
@@ -146,7 +156,33 @@
 
 /* REMOVE BUTTON */
 .remove-form{
+    margin-top:8px;
+}
+
+.favorite-form{
     margin-top:10px;
+}
+
+.favorite-btn{
+    width:100%;
+    background:none;
+    border:1px solid #ffd166;
+    color:#ffd166;
+    padding:6px;
+    cursor:pointer;
+    font-family:monospace;
+    font-size:12px;
+}
+
+.favorite-btn:hover{
+    background:#ffd166;
+    color:#000;
+}
+
+.favorite-btn.is-favorite{
+    background:#ffd166;
+    color:#000;
+    box-shadow:0 0 12px #ffd16666;
 }
 
 .remove-btn{

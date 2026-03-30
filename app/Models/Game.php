@@ -22,7 +22,7 @@ class Game extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_games')
-                    ->withPivot('status', 'progress', 'started_at', 'completed_at')
+                    ->withPivot('status', 'progress', 'is_favorite', 'started_at', 'completed_at')
                     ->withTimestamps();
     }
 

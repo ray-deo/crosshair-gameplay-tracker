@@ -14,8 +14,9 @@ class LibraryController extends Controller
     {
         $games = Auth::user()
             ->games()
-            ->withPivot('status', 'progress')
-            ->latest()
+            ->withPivot('status', 'progress', 'is_favorite')
+            ->orderByPivot('is_favorite', 'desc')
+            ->orderByPivot('updated_at', 'desc')
             ->get();
 
         return view('library', compact('games'));
@@ -54,6 +55,25 @@ class LibraryController extends Controller
         $user->games()->detach($id);
 
         return back()->with('success', 'Game removed from library');
+    }
+
+    public function toggleFavorite($id)
+    {
+        $user = auth()->user();
+
+        $existing = $user->games()->where('game_id', $id)->first();
+        if (!$existing) {
+            return back()->with('error', 'Game not found in your library.');
+        }
+
+        $isFavorite = (bool) ($existing->pivot->is_favorite ?? false);
+
+        $user->games()->updateExistingPivot($id, [
+            'is_favorite' => !$isFavorite,
+            'updated_at' => now(),
+        ]);
+
+        return back()->with('success', !$isFavorite ? 'Added to favorites.' : 'Removed from favorites.');
     }
 
     public function importFromSteam(Request $request)
